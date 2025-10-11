@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISDEV - Teste</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; }
+        .header { background: #003B71; color: white; padding: 20px; }
+        .tabs { background: white; display: flex; gap: 10px; padding: 10px; border-bottom: 2px solid #ddd; }
+        .tab { padding: 10px 20px; border: none; background: transparent; cursor: pointer; font-size: 14px; }
+        .tab.active { color: #F39200; border-bottom: 2px solid #F39200; }
+        .content { max-width: 1200px; margin: 20px auto; padding: 20px; }
+        .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SISDEV - Barra do Rio</h1>
+        <p style="color: #F39200; margin-top: 5px;">Sistema de Gestão de Devoluções de Contêineres Vazios</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('dashboard')">Dashboard</button>
+        <button class="tab" onclick="showTab('agendamentos')">Agendamentos</button>
+        <button class="tab" onclick="showTab('mapa')">Mapa</button>
+        <button class="tab" onclick="showTab('marketplace')">Marketplace</button>
+        <button class="tab" onclick="showTab('relatorios')">Relatórios</button>
+    </div>
+
+    <div class="content">
+        <div id="dashboard" class="card">
+            <h2 style="margin-bottom: 20px;">Dashboard</h2>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                <div style="text-align: center; padding: 20px; background: #f9fafb; border-radius: 8px;">
+                    <p style="color: #6b7280; font-size: 14px;">Total Depots</p>
+                    <p style="font-size: 36px; font-weight: 300; margin-top: 8px;">18</p>
+                </div>
+                <div style="text-align: center; padding: 20px; background: #f9fafb; border-radius: 8px;">
+                    <p style="color: #6b7280; font-size: 14px;">Disponíveis</p>
+                    <p style="font-size: 36px; font-weight: 300; margin-top: 8px; color: #10b981;">8</p>
+                </div>
+                <div style="text-align: center; padding: 20px; background: #f9fafb; border-radius: 8px;">
+                    <p style="color: #6b7280; font-size: 14px;">Devoluções Hoje</p>
+                    <p style="font-size: 36px; font-weight: 300; margin-top: 8px; color: #003B71;">47</p>
+                </div>
+                <div style="text-align: center; padding: 20px; background: #f9fafb; border-radius: 8px;">
+                    <p style="color: #6b7280; font-size: 14px;">Tempo Médio</p>
+                    <p style="font-size: 36px; font-weight: 300; margin-top: 8px; color: #F39200;">42min</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="agendamentos" class="card hidden">
+            <h2 style="margin-bottom: 20px;">Agendamentos</h2>
+            <p>Conteúdo de agendamentos aqui...</p>
+            <table style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #003B71;">
+                        <th style="padding: 12px; text-align: left;">Container</th>
+                        <th style="padding: 12px; text-align: left;">Armador</th>
+                        <th style="padding: 12px; text-align: left;">Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #e5e7eb;">
+                        <td style="padding: 12px;">MAEU1234567</td>
+                        <td style="padding: 12px;">Maersk</td>
+                        <td style="padding: 12px;">2025-10-11</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e5e7eb;">
+                        <td style="padding: 12px;">MSCU9876543</td>
+                        <td style="padding: 12px;">MSC</td>
+                        <td style="padding: 12px;">2025-10-11</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="mapa" class="card hidden">
+            <h2 style="margin-bottom: 20px;">Mapa de Depots</h2>
+            <div style="height: 400px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <p style="font-size: 24px; color: #6b7280;">🗺️ Mapa de Localização</p>
+            </div>
+        </div>
+
+        <div id="marketplace" class="card hidden">
+            <h2 style="margin-bottom: 20px;">Marketplace</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                <div style="border: 1px solid #e5e7eb; padding: 20px; border-radius: 8px;">
+                    <h3 style="margin-bottom: 10px;">LogPark Navegantes</h3>
+                    <p style="color: #6b7280; font-size: 14px; margin-bottom: 10px;">4km do porto</p>
+                    <p style="margin-bottom: 10px;">Preço: <strong style="color: #10b981;">R$ 45/dia</strong></p>
+                    <button style="width: 100%; padding: 10px; background: #003B71; color: white; border: none; border-radius: 6px; cursor: pointer;">Solicitar</button>
+                </div>
+                <div style="border: 1px solid #e5e7eb; padding: 20px; border-radius: 8px;">
+                    <h3 style="margin-bottom: 10px;">Depot Privado Itajaí</h3>
+                    <p style="color: #6b7280; font-size: 14px; margin-bottom: 10px;">3km do porto</p>
+                    <p style="margin-bottom: 10px;">Preço: <strong style="color: #10b981;">R$ 38/dia</strong></p>
+                    <button style="width: 100%; padding: 10px; background: #003B71; color: white; border: none; border-radius: 6px; cursor: pointer;">Solicitar</button>
+                </div>
+                <div style="border: 1px solid #e5e7eb; padding: 20px; border-radius: 8px;">
+                    <h3 style="margin-bottom: 10px;">Terminal Vale</h3>
+                    <p style="color: #6b7280; font-size: 14px; margin-bottom: 10px;">2km do porto</p>
+                    <p style="margin-bottom: 10px;">Preço: <strong style="color: #10b981;">R$ 52/dia</strong></p>
+                    <button style="width: 100%; padding: 10px; background: #003B71; color: white; border: none; border-radius: 6px; cursor: pointer;">Solicitar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="relatorios" class="card hidden">
+            <h2 style="margin-bottom: 20px;">Relatórios</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+                <div style="border-left: 4px solid #F39200; padding-left: 16px;">
+                    <p style="color: #6b7280; font-size: 14px;">Economia Total</p>
+                    <p style="font-size: 32px; font-weight: 300; margin-top: 8px;">R$ 680K</p>
+                    <p style="color: #10b981; font-size: 12px; margin-top: 4px;">↓ 42%</p>
+                </div>
+                <div style="border-left: 4px solid #003B71; padding-left: 16px;">
+                    <p style="color: #6b7280; font-size: 14px;">Devoluções</p>
+                    <p style="font-size: 32px; font-weight: 300; margin-top: 8px;">7.891</p>
+                    <p style="color: #6b7280; font-size: 12px; margin-top: 4px;">6 meses</p>
+                </div>
+                <div style="border-left: 4px solid #10b981; padding-left: 16px;">
+                    <p style="color: #6b7280; font-size: 14px;">Tempo Médio</p>
+                    <p style="font-size: 32px; font-weight: 300; margin-top: 8px;">42min</p>
+                    <p style="color: #10b981; font-size: 12px; margin-top: 4px;">↓ 38%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Esconder todas as abas
+            const tabs = ['dashboard', 'agendamentos', 'mapa', 'marketplace', 'relatorios'];
+            tabs.forEach(tab => {
+                document.getElementById(tab).classList.add('hidden');
+            });
+            
+            // Remover active de todos os botões
+            document.querySelectorAll('.tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Mostrar aba selecionada
+            document.getElementById(tabName).classList.remove('hidden');
+            
+            // Adicionar active no botão clicado
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
