@@ -80,7 +80,8 @@
         .bar-bg { width: 100%; background: #f3f4f6; height: 8px; border-radius: 4px; }
         .bar-fill { height: 8px; border-radius: 4px; background: #003B71; }
         
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+        .modal.show { display: flex; }
         .modal-content { background: white; border-radius: 8px; max-width: 672px; width: 100%; max-height: 90vh; overflow-y: auto; }
         .modal-header { padding: 24px; background: #003B71; color: white; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center; }
         .modal-body { padding: 24px; }
@@ -418,11 +419,11 @@
     </div>
 
     <!-- Modal -->
-    <div id="modal" class="modal hidden">
+    <div id="modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 style="font-size: 18px; font-weight: 500;">Novo Agendamento</h3>
-                <button onclick="closeModal()" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 24px;">×</button>
+                <button onclick="closeModal()" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 24px; line-height: 1;">×</button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
@@ -570,16 +571,16 @@
 
         // Modal
         function showModal() {
-            document.getElementById('modal').classList.remove('hidden');
+            document.getElementById('modal').classList.add('show');
         }
 
         function closeModal() {
-            document.getElementById('modal').classList.add('hidden');
+            document.getElementById('modal').classList.remove('show');
         }
 
         // Fechar modal ao clicar fora
         document.getElementById('modal').addEventListener('click', function(e) {
-            if (e.target === this) {
+            if (e.target.id === 'modal') {
                 closeModal();
             }
         });
