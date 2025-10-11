@@ -69,31 +69,47 @@ const App = () => {
   const alertasCriticos = alertas.filter(a => a.tipo === 'critico').length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="text-white p-6" style={{backgroundColor: '#003B71'}}>
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+    <div style={{minHeight: '100vh', backgroundColor: '#f9fafb'}}>
+      <div style={{backgroundColor: '#003B71', color: 'white', padding: '24px'}}>
+        <div style={{maxWidth: '1280px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px'}}>
           <div>
-            <h1 className="text-2xl md:text-3xl font-light">SISDEV - Barra do Rio</h1>
-            <p className="text-sm mt-1" style={{color: '#F39200'}}>Sistema de Gestão de Devoluções de Contêineres Vazios</p>
+            <h1 style={{fontSize: '28px', fontWeight: '300', margin: 0}}>SISDEV - Barra do Rio</h1>
+            <p style={{color: '#F39200', fontSize: '14px', marginTop: '4px'}}>Sistema de Gestão de Devoluções de Contêineres Vazios</p>
           </div>
-          <div className="flex items-center gap-4">
-            <button className="relative p-2 hover:bg-blue-800 rounded-lg">
+          <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+            <button style={{position: 'relative', padding: '8px', backgroundColor: 'transparent', border: 'none', borderRadius: '8px', cursor: 'pointer', color: 'white'}}>
               <Bell />
-              {alertasCriticos > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{alertasCriticos}</span>}
+              {alertasCriticos > 0 && <span style={{position: 'absolute', top: '-4px', right: '-4px', backgroundColor: '#ef4444', color: 'white', fontSize: '11px', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold'}}>{alertasCriticos}</span>}
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-blue-800">
+            <button style={{display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: 'transparent', border: 'none', borderRadius: '8px', cursor: 'pointer', color: 'white'}}>
               <RefreshCw />
-              <span className="text-sm hidden sm:inline">Atualizar</span>
+              <span style={{fontSize: '14px'}}>Atualizar</span>
             </button>
           </div>
         </div>
       </div>
 
-      <div className="bg-white border-b border-gray-200 overflow-x-auto">
-        <div className="max-w-7xl mx-auto">
-          <nav className="flex gap-0 min-w-max">
+      <div style={{backgroundColor: 'white', borderBottom: '1px solid #e5e7eb'}}>
+        <div style={{maxWidth: '1280px', margin: '0 auto'}}>
+          <nav style={{display: 'flex', gap: 0}}>
             {['dashboard', 'agendamentos', 'mapa', 'marketplace', 'relatorios'].map(tab => (
-              <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-4 md:px-6 py-4 font-medium border-b-2 whitespace-nowrap ${activeTab === tab ? '' : 'text-gray-600 border-transparent'}`} style={activeTab === tab ? {color: '#F39200', borderColor: '#F39200'} : {}}>
+              <button 
+                key={tab} 
+                onClick={() => setActiveTab(tab)} 
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '16px 24px',
+                  fontWeight: '500',
+                  border: 'none',
+                  borderBottom: activeTab === tab ? '2px solid #F39200' : '2px solid transparent',
+                  backgroundColor: 'transparent',
+                  color: activeTab === tab ? '#F39200' : '#6b7280',
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap'
+                }}
+              >
                 {tab === 'dashboard' && <><BarChart3 />Dashboard</>}
                 {tab === 'agendamentos' && <><Calendar />Agendamentos</>}
                 {tab === 'mapa' && <><Map />Mapa</>}
@@ -105,28 +121,40 @@ const App = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto p-4 md:p-6">
+      <div style={{maxWidth: '1280px', margin: '0 auto', padding: '24px'}}>
         {activeTab === 'dashboard' && (
-          <div className="space-y-6">
-            <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center"><p className="text-xs md:text-sm text-gray-500 mb-2">Total Depots</p><p className="text-2xl md:text-4xl font-light text-gray-800">18</p></div>
-                <div className="text-center md:border-l border-gray-200"><p className="text-xs md:text-sm text-gray-500 mb-2">Disponíveis</p><p className="text-2xl md:text-4xl font-light text-green-600">8</p></div>
-                <div className="text-center md:border-l border-gray-200"><p className="text-xs md:text-sm text-gray-500 mb-2">Devoluções Hoje</p><p className="text-2xl md:text-4xl font-light" style={{color: '#003B71'}}>47</p></div>
-                <div className="text-center md:border-l border-gray-200"><p className="text-xs md:text-sm text-gray-500 mb-2">Tempo Médio</p><p className="text-2xl md:text-4xl font-light" style={{color: '#F39200'}}>42min</p></div>
+          <div style={{display: 'flex', flexDirection: 'column', gap: '24px'}}>
+            <div style={{backgroundColor: 'white', padding: '24px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'}}>
+              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px'}}>
+                <div style={{textAlign: 'center'}}>
+                  <p style={{fontSize: '14px', color: '#6b7280', marginBottom: '8px'}}>Total Depots</p>
+                  <p style={{fontSize: '36px', fontWeight: '300', color: '#1f2937', margin: 0}}>18</p>
+                </div>
+                <div style={{textAlign: 'center', borderLeft: '1px solid #e5e7eb', paddingLeft: '16px'}}>
+                  <p style={{fontSize: '14px', color: '#6b7280', marginBottom: '8px'}}>Disponíveis</p>
+                  <p style={{fontSize: '36px', fontWeight: '300', color: '#10b981', margin: 0}}>8</p>
+                </div>
+                <div style={{textAlign: 'center', borderLeft: '1px solid #e5e7eb', paddingLeft: '16px'}}>
+                  <p style={{fontSize: '14px', color: '#6b7280', marginBottom: '8px'}}>Devoluções Hoje</p>
+                  <p style={{fontSize: '36px', fontWeight: '300', color: '#003B71', margin: 0}}>47</p>
+                </div>
+                <div style={{textAlign: 'center', borderLeft: '1px solid #e5e7eb', paddingLeft: '16px'}}>
+                  <p style={{fontSize: '14px', color: '#6b7280', marginBottom: '8px'}}>Tempo Médio</p>
+                  <p style={{fontSize: '36px', fontWeight: '300', color: '#F39200', margin: 0}}>42min</p>
+                </div>
               </div>
             </div>
 
-            <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                <h3 className="text-lg font-medium text-gray-800">Disponibilidade em Tempo Real</h3>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <select value={filtroArmador} onChange={(e) => setFiltroArmador(e.target.value)} className="text-sm border rounded px-3 py-2">
+            <div style={{backgroundColor: 'white', padding: '24px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'}}>
+              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '16px'}}>
+                <h3 style={{fontSize: '18px', fontWeight: '500', color: '#1f2937', margin: 0}}>Disponibilidade em Tempo Real</h3>
+                <div style={{display: 'flex', gap: '12px'}}>
+                  <select value={filtroArmador} onChange={(e) => setFiltroArmador(e.target.value)} style={{fontSize: '14px', border: '1px solid #d1d5db', borderRadius: '6px', padding: '8px 12px'}}>
                     <option value="todos">Todos Armadores</option>
                     <option value="Maersk">Maersk</option>
                     <option value="MSC">MSC</option>
                   </select>
-                  <select value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)} className="text-sm border rounded px-3 py-2">
+                  <select value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)} style={{fontSize: '14px', border: '1px solid #d1d5db', borderRadius: '6px', padding: '8px 12px'}}>
                     <option value="todos">Todos Status</option>
                     <option value="disponivel">Disponível</option>
                     <option value="parcial">Parcial</option>
@@ -134,63 +162,75 @@ const App = () => {
                 </div>
               </div>
 
-              <div className="mb-4 p-3 bg-gray-50 rounded text-xs space-y-2">
-                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-green-500"></div><span><strong>Disponível:</strong> Abaixo de 50%</span></div>
-                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-yellow-500"></div><span><strong>Parcial:</strong> 50-70%</span></div>
-                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-orange-500"></div><span><strong>Ocupado:</strong> 70-90%</span></div>
-                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500"></div><span><strong>Cheio:</strong> Acima de 90%</span></div>
+              <div style={{marginBottom: '16px', padding: '12px', backgroundColor: '#f9fafb', borderRadius: '6px', fontSize: '12px'}}>
+                <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
+                  <div style={{width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#10b981'}}></div>
+                  <span><strong>Disponível:</strong> Abaixo de 50%</span>
+                </div>
+                <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
+                  <div style={{width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#eab308'}}></div>
+                  <span><strong>Parcial:</strong> 50-70%</span>
+                </div>
+                <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
+                  <div style={{width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#f97316'}}></div>
+                  <span><strong>Ocupado:</strong> 70-90%</span>
+                </div>
+                <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                  <div style={{width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#ef4444'}}></div>
+                  <span><strong>Cheio:</strong> Acima de 90%</span>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px'}}>
                 {depotsFiltrados.map(depot => (
-                  <div key={depot.id} className="flex items-center justify-between p-4 border rounded hover:shadow-md transition">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className={`w-3 h-3 rounded-full ${getStatusColor(depot.status)}`}></div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium truncate">{depot.nome}</p>
-                        <p className="text-xs text-gray-500 truncate">{depot.armador} • {depot.localizacao}</p>
+                  <div key={depot.id} style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', border: '1px solid #e5e7eb', borderRadius: '6px'}}>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0}}>
+                      <div style={{width: '12px', height: '12px', borderRadius: '50%', backgroundColor: depot.status === 'disponivel' ? '#10b981' : depot.status === 'parcial' ? '#eab308' : depot.status === 'ocupado' ? '#f97316' : '#ef4444'}}></div>
+                      <div style={{minWidth: 0}}>
+                        <p style={{fontSize: '14px', fontWeight: '500', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>{depot.nome}</p>
+                        <p style={{fontSize: '12px', color: '#6b7280', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>{depot.armador} • {depot.localizacao}</p>
                       </div>
                     </div>
-                    <div className="text-right ml-4">
-                      <p className="text-sm font-medium">{depot.capacidade}%</p>
-                      <p className="text-xs text-gray-400">{depot.tempoEspera}</p>
+                    <div style={{textAlign: 'right', marginLeft: '16px'}}>
+                      <p style={{fontSize: '14px', fontWeight: '500', margin: 0}}>{depot.capacidade}%</p>
+                      <p style={{fontSize: '12px', color: '#9ca3af', margin: 0}}>{depot.tempoEspera}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
-                <h3 className="text-lg font-medium mb-4 pb-2 border-b-2" style={{borderColor: '#F39200'}}>Alertas Críticos</h3>
-                <div className="space-y-3">
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '24px'}}>
+              <div style={{backgroundColor: 'white', padding: '24px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'}}>
+                <h3 style={{fontSize: '18px', fontWeight: '500', marginBottom: '16px', paddingBottom: '8px', borderBottom: '2px solid #F39200'}}>Alertas Críticos</h3>
+                <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
                   {alertas.map((a, i) => (
-                    <div key={i} className={`p-3 rounded ${getAlertStyle(a.tipo)}`}>
-                      <div className="flex items-start gap-2">
-                        <div className={getAlertIcon(a.tipo)}><AlertCircle /></div>
-                        <div className="flex-1">
-                          <p className="text-sm">{a.mensagem}</p>
-                          <p className="text-xs text-gray-500 mt-1">{a.tempo}</p>
+                    <div key={i} style={{padding: '12px', borderRadius: '6px', backgroundColor: a.tipo === 'critico' ? '#fef2f2' : a.tipo === 'atencao' ? '#fefce8' : '#eff6ff', borderLeft: `4px solid ${a.tipo === 'critico' ? '#ef4444' : a.tipo === 'atencao' ? '#eab308' : '#3b82f6'}`}}>
+                      <div style={{display: 'flex', alignItems: 'start', gap: '8px'}}>
+                        <div style={{color: a.tipo === 'critico' ? '#ef4444' : a.tipo === 'atencao' ? '#eab308' : '#3b82f6'}}><AlertCircle /></div>
+                        <div style={{flex: 1}}>
+                          <p style={{fontSize: '14px', margin: 0}}>{a.mensagem}</p>
+                          <p style={{fontSize: '12px', color: '#6b7280', marginTop: '4px'}}>{a.tempo}</p>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
-                <h3 className="text-lg font-medium mb-4 pb-2 border-b-2" style={{borderColor: '#F39200'}}>Economia Gerada</h3>
-                <div className="space-y-4">
-                  <div className="border-l-4 pl-4" style={{borderColor: '#F39200'}}>
-                    <p className="text-sm text-gray-600">Custos Evitados</p>
-                    <p className="text-2xl md:text-3xl font-light mt-1">R$ 127.450</p>
+              <div style={{backgroundColor: 'white', padding: '24px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'}}>
+                <h3 style={{fontSize: '18px', fontWeight: '500', marginBottom: '16px', paddingBottom: '8px', borderBottom: '2px solid #F39200'}}>Economia Gerada</h3>
+                <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                  <div style={{borderLeft: '4px solid #F39200', paddingLeft: '16px'}}>
+                    <p style={{fontSize: '14px', color: '#6b7280', margin: 0}}>Custos Evitados</p>
+                    <p style={{fontSize: '28px', fontWeight: '300', marginTop: '4px'}}>R$ 127.450</p>
                   </div>
-                  <div className="border-l-4 pl-4" style={{borderColor: '#003B71'}}>
-                    <p className="text-sm text-gray-600">Tempo Reduzido</p>
-                    <p className="text-2xl md:text-3xl font-light mt-1">-38%</p>
+                  <div style={{borderLeft: '4px solid #003B71', paddingLeft: '16px'}}>
+                    <p style={{fontSize: '14px', color: '#6b7280', margin: 0}}>Tempo Reduzido</p>
+                    <p style={{fontSize: '28px', fontWeight: '300', marginTop: '4px'}}>-38%</p>
                   </div>
-                  <div className="border-l-4 border-green-500 pl-4">
-                    <p className="text-sm text-gray-600">Devoluções</p>
-                    <p className="text-2xl md:text-3xl font-light mt-1">1.243</p>
+                  <div style={{borderLeft: '4px solid #10b981', paddingLeft: '16px'}}>
+                    <p style={{fontSize: '14px', color: '#6b7280', margin: 0}}>Devoluções</p>
+                    <p style={{fontSize: '28px', fontWeight: '300', marginTop: '4px'}}>1.243</p>
                   </div>
                 </div>
               </div>
@@ -199,40 +239,40 @@ const App = () => {
         )}
 
         {activeTab === 'agendamentos' && (
-          <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
-            <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
-              <h3 className="text-lg font-medium">Agendamentos</h3>
-              <button onClick={() => setShowModal(true)} className="flex items-center justify-center gap-2 text-white px-6 py-2 text-sm rounded" style={{backgroundColor: '#F39200'}}>
+          <div style={{backgroundColor: 'white', padding: '24px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '16px'}}>
+              <h3 style={{fontSize: '18px', fontWeight: '500', margin: 0}}>Agendamentos</h3>
+              <button onClick={() => setShowModal(true)} style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: 'white', padding: '8px 24px', fontSize: '14px', borderRadius: '6px', backgroundColor: '#F39200', border: 'none', cursor: 'pointer'}}>
                 <Calendar size={18} />Novo
               </button>
             </div>
-            <div className="mb-4">
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"><Search /></div>
-                <input type="text" placeholder="Buscar..." value={busca} onChange={(e) => setBusca(e.target.value)} className="w-full pl-10 pr-4 py-2 border rounded-lg" />
+            <div style={{marginBottom: '16px'}}>
+              <div style={{position: 'relative'}}>
+                <div style={{position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af'}}><Search /></div>
+                <input type="text" placeholder="Buscar..." value={busca} onChange={(e) => setBusca(e.target.value)} style={{width: '100%', paddingLeft: '40px', paddingRight: '16px', paddingTop: '8px', paddingBottom: '8px', border: '1px solid #d1d5db', borderRadius: '8px'}} />
               </div>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-max">
+            <div style={{overflowX: 'auto'}}>
+              <table style={{width: '100%', minWidth: '600px'}}>
                 <thead>
-                  <tr className="border-b-2" style={{borderColor: '#003B71'}}>
-                    <th className="p-3 text-left text-sm font-medium">Container</th>
-                    <th className="p-3 text-left text-sm font-medium">Armador</th>
-                    <th className="p-3 text-left text-sm font-medium">Importador</th>
-                    <th className="p-3 text-center text-sm font-medium">Data</th>
-                    <th className="p-3 text-center text-sm font-medium">Status</th>
+                  <tr style={{borderBottom: '2px solid #003B71'}}>
+                    <th style={{padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '500'}}>Container</th>
+                    <th style={{padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '500'}}>Armador</th>
+                    <th style={{padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '500'}}>Importador</th>
+                    <th style={{padding: '12px', textAlign: 'center', fontSize: '14px', fontWeight: '500'}}>Data</th>
+                    <th style={{padding: '12px', textAlign: 'center', fontSize: '14px', fontWeight: '500'}}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {agendamentosFiltrados.map((ag) => (
-                    <tr key={ag.id} className="border-b">
-                      <td className="p-3 text-sm font-medium">{ag.container}</td>
-                      <td className="p-3 text-sm">{ag.armador}</td>
-                      <td className="p-3 text-sm">{ag.importador}</td>
-                      <td className="p-3 text-sm text-center">{ag.data}</td>
-                      <td className="p-3 text-center">
-                        {ag.status === 'confirmado' && <span className="text-xs bg-green-500 text-white px-3 py-1 rounded-full">Confirmado</span>}
-                        {ag.status === 'aguardando' && <span className="text-xs bg-yellow-500 text-white px-3 py-1 rounded-full">Aguardando</span>}
+                    <tr key={ag.id} style={{borderBottom: '1px solid #e5e7eb'}}>
+                      <td style={{padding: '12px', fontSize: '14px', fontWeight: '500'}}>{ag.container}</td>
+                      <td style={{padding: '12px', fontSize: '14px'}}>{ag.armador}</td>
+                      <td style={{padding: '12px', fontSize: '14px'}}>{ag.importador}</td>
+                      <td style={{padding: '12px', fontSize: '14px', textAlign: 'center'}}>{ag.data}</td>
+                      <td style={{padding: '12px', textAlign: 'center'}}>
+                        {ag.status === 'confirmado' && <span style={{fontSize: '12px', backgroundColor: '#10b981', color: 'white', padding: '4px 12px', borderRadius: '9999px'}}>Confirmado</span>}
+                        {ag.status === 'aguardando' && <span style={{fontSize: '12px', backgroundColor: '#eab308', color: 'white', padding: '4px 12px', borderRadius: '9999px'}}>Aguardando</span>}
                       </td>
                     </tr>
                   ))}
@@ -243,48 +283,72 @@ const App = () => {
         )}
 
         {activeTab === 'mapa' && (
-          <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
-            <h3 className="text-lg font-medium mb-4 pb-2 border-b-2" style={{borderColor: '#F39200'}}>Mapa de Depots</h3>
-            <div className="relative bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-lg" style={{minHeight: '500px'}}>
-              <div className="absolute top-4 left-4 bg-white p-3 rounded shadow border-2" style={{borderColor: '#003B71'}}><p className="text-xs font-bold">ITAJAÍ</p></div>
-              <div className="absolute top-4 right-4 bg-white p-3 rounded shadow border-2" style={{borderColor: '#003B71'}}><p className="text-xs font-bold">NAVEGANTES</p></div>
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-blue-900 text-white px-4 py-2 rounded-lg"><p className="text-xs font-bold">⚓ PORTO</p></div>
-              <div className="absolute top-32 left-16 bg-white rounded-lg shadow-md p-3 border-l-4 border-green-500 w-48">
-                <div className="flex items-center justify-between mb-2"><MapPin /><div className="w-3 h-3 rounded-full bg-green-500"></div></div>
-                <p className="text-sm font-bold">Depot Maersk</p>
-                <p className="text-xs text-gray-500">Cordeiros</p>
-                <div className="flex justify-between mt-2 pt-2 border-t"><span className="text-xs">Cap:</span><span className="text-sm font-bold text-green-600">85%</span></div>
+          <div style={{backgroundColor: 'white', padding: '24px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'}}>
+            <h3 style={{fontSize: '18px', fontWeight: '500', marginBottom: '16px', paddingBottom: '8px', borderBottom: '2px solid #F39200'}}>Mapa de Depots</h3>
+            <div style={{position: 'relative', background: 'linear-gradient(to bottom right, #eff6ff, #dbeafe)', padding: '32px', borderRadius: '8px', minHeight: '500px'}}>
+              <div style={{position: 'absolute', top: '16px', left: '16px', backgroundColor: 'white', padding: '12px', borderRadius: '6px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '2px solid #003B71'}}>
+                <p style={{fontSize: '12px', fontWeight: 'bold', margin: 0}}>ITAJAÍ</p>
               </div>
-              <div className="absolute top-32 right-16 bg-white rounded-lg shadow-md p-3 border-l-4 border-green-500 w-48">
-                <div className="flex items-center justify-between mb-2"><MapPin /><div className="w-3 h-3 rounded-full bg-green-500"></div></div>
-                <p className="text-sm font-bold">Hamburg Sud</p>
-                <p className="text-xs text-gray-500">Centro</p>
-                <div className="flex justify-between mt-2 pt-2 border-t"><span className="text-xs">Cap:</span><span className="text-sm font-bold text-green-600">45%</span></div>
+              <div style={{position: 'absolute', top: '16px', right: '16px', backgroundColor: 'white', padding: '12px', borderRadius: '6px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '2px solid #003B71'}}>
+                <p style={{fontSize: '12px', fontWeight: 'bold', margin: 0}}>NAVEGANTES</p>
               </div>
-              <div className="absolute bottom-32 left-32 bg-white rounded-lg shadow-md p-3 border-l-4 border-red-500 w-48">
-                <div className="flex items-center justify-between mb-2"><MapPin /><div className="w-3 h-3 rounded-full bg-red-500"></div></div>
-                <p className="text-sm font-bold">Depot MSC</p>
-                <p className="text-xs text-gray-500">Porto</p>
-                <div className="flex justify-between mt-2 pt-2 border-t"><span className="text-xs">Cap:</span><span className="text-sm font-bold text-red-600">95%</span></div>
+              <div style={{position: 'absolute', bottom: '16px', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#1e3a8a', color: 'white', padding: '8px 16px', borderRadius: '8px'}}>
+                <p style={{fontSize: '12px', fontWeight: 'bold', margin: 0}}>⚓ PORTO</p>
+              </div>
+              <div style={{position: 'absolute', top: '128px', left: '64px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '12px', borderLeft: '4px solid #10b981', width: '192px'}}>
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px'}}>
+                  <MapPin />
+                  <div style={{width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#10b981'}}></div>
+                </div>
+                <p style={{fontSize: '14px', fontWeight: 'bold', margin: 0}}>Depot Maersk</p>
+                <p style={{fontSize: '12px', color: '#6b7280', margin: 0}}>Cordeiros</p>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #e5e7eb'}}>
+                  <span style={{fontSize: '12px'}}>Cap:</span>
+                  <span style={{fontSize: '14px', fontWeight: 'bold', color: '#10b981'}}>85%</span>
+                </div>
+              </div>
+              <div style={{position: 'absolute', top: '128px', right: '64px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '12px', borderLeft: '4px solid #10b981', width: '192px'}}>
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px'}}>
+                  <MapPin />
+                  <div style={{width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#10b981'}}></div>
+                </div>
+                <p style={{fontSize: '14px', fontWeight: 'bold', margin: 0}}>Hamburg Sud</p>
+                <p style={{fontSize: '12px', color: '#6b7280', margin: 0}}>Centro</p>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #e5e7eb'}}>
+                  <span style={{fontSize: '12px'}}>Cap:</span>
+                  <span style={{fontSize: '14px', fontWeight: 'bold', color: '#10b981'}}>45%</span>
+                </div>
+              </div>
+              <div style={{position: 'absolute', bottom: '128px', left: '128px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '12px', borderLeft: '4px solid #ef4444', width: '192px'}}>
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px'}}>
+                  <MapPin />
+                  <div style={{width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#ef4444'}}></div>
+                </div>
+                <p style={{fontSize: '14px', fontWeight: 'bold', margin: 0}}>Depot MSC</p>
+                <p style={{fontSize: '12px', color: '#6b7280', margin: 0}}>Porto</p>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #e5e7eb'}}>
+                  <span style={{fontSize: '12px'}}>Cap:</span>
+                  <span style={{fontSize: '14px', fontWeight: 'bold', color: '#ef4444'}}>95%</span>
+                </div>
               </div>
             </div>
           </div>
         )}
 
         {activeTab === 'marketplace' && (
-          <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
-            <h3 className="text-lg font-medium mb-4 pb-2 border-b-2" style={{borderColor: '#F39200'}}>Marketplace</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div style={{backgroundColor: 'white', padding: '24px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'}}>
+            <h3 style={{fontSize: '18px', fontWeight: '500', marginBottom: '16px', paddingBottom: '8px', borderBottom: '2px solid #F39200'}}>Marketplace</h3>
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px'}}>
               {[
                 { nome: 'LogPark Navegantes', dist: '4km', preco: 'R$ 45' },
                 { nome: 'Depot Privado Itajaí', dist: '3km', preco: 'R$ 38' },
                 { nome: 'Terminal Vale', dist: '2km', preco: 'R$ 52' }
               ].map((d, i) => (
-                <div key={i} className="border p-4 rounded hover:shadow-lg transition">
-                  <h4 className="font-medium mb-2">{d.nome}</h4>
-                  <p className="text-xs text-gray-500 mb-3">{d.dist} do porto</p>
-                  <p className="text-sm mb-2">Preço: <span className="font-bold text-green-600">{d.preco}/dia</span></p>
-                  <button className="w-full text-white py-2 text-sm rounded" style={{backgroundColor: '#003B71'}}>Solicitar</button>
+                <div key={i} style={{border: '1px solid #e5e7eb', padding: '16px', borderRadius: '8px'}}>
+                  <h4 style={{fontWeight: '500', marginBottom: '8px', margin: 0}}>{d.nome}</h4>
+                  <p style={{fontSize: '12px', color: '#6b7280', marginBottom: '12px'}}>{d.dist} do porto</p>
+                  <p style={{fontSize: '14px', marginBottom: '8px'}}>Preço: <span style={{fontWeight: 'bold', color: '#10b981'}}>{d.preco}/dia</span></p>
+                  <button style={{width: '100%', color: 'white', padding: '8px', fontSize: '14px', borderRadius: '6px', backgroundColor: '#003B71', border: 'none', cursor: 'pointer'}}>Solicitar</button>
                 </div>
               ))}
             </div>
@@ -292,16 +356,28 @@ const App = () => {
         )}
 
         {activeTab === 'relatorios' && (
-          <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
-            <h3 className="text-lg font-medium mb-4 pb-2 border-b-2" style={{borderColor: '#F39200'}}>Relatórios</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="border-l-4 pl-4" style={{borderColor: '#F39200'}}><p className="text-sm text-gray-600 mb-1">Economia Total</p><p className="text-3xl font-light">R$ 680K</p><p className="text-xs text-green-600 mt-1">↓ 42%</p></div>
-              <div className="border-l-4 pl-4" style={{borderColor: '#003B71'}}><p className="text-sm text-gray-600 mb-1">Devoluções</p><p className="text-3xl font-light">7.891</p><p className="text-xs text-gray-500 mt-1">6 meses</p></div>
-              <div className="border-l-4 border-green-500 pl-4"><p className="text-sm text-gray-600 mb-1">Tempo Médio</p><p className="text-3xl font-light">42min</p><p className="text-xs text-green-600 mt-1">↓ 38%</p></div>
+          <div style={{backgroundColor: 'white', padding: '24px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'}}>
+            <h3 style={{fontSize: '18px', fontWeight: '500', marginBottom: '16px', paddingBottom: '8px', borderBottom: '2px solid #F39200'}}>Relatórios</h3>
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px', marginBottom: '32px'}}>
+              <div style={{borderLeft: '4px solid #F39200', paddingLeft: '16px'}}>
+                <p style={{fontSize: '14px', color: '#6b7280', marginBottom: '4px'}}>Economia Total</p>
+                <p style={{fontSize: '28px', fontWeight: '300', margin: 0}}>R$ 680K</p>
+                <p style={{fontSize: '12px', color: '#10b981', marginTop: '4px'}}>↓ 42%</p>
+              </div>
+              <div style={{borderLeft: '4px solid #003B71', paddingLeft: '16px'}}>
+                <p style={{fontSize: '14px', color: '#6b7280', marginBottom: '4px'}}>Devoluções</p>
+                <p style={{fontSize: '28px', fontWeight: '300', margin: 0}}>7.891</p>
+                <p style={{fontSize: '12px', color: '#6b7280', marginTop: '4px'}}>6 meses</p>
+              </div>
+              <div style={{borderLeft: '4px solid #10b981', paddingLeft: '16px'}}>
+                <p style={{fontSize: '14px', color: '#6b7280', marginBottom: '4px'}}>Tempo Médio</p>
+                <p style={{fontSize: '28px', fontWeight: '300', margin: 0}}>42min</p>
+                <p style={{fontSize: '12px', color: '#10b981', marginTop: '4px'}}>↓ 38%</p>
+              </div>
             </div>
             <div>
-              <p className="text-sm font-medium mb-4">Desempenho por Armador</p>
-              <div className="space-y-4">
+              <p style={{fontSize: '14px', fontWeight: '500', marginBottom: '16px'}}>Desempenho por Armador</p>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
                 {[
                   { nome: 'Maersk', tempo: 35 },
                   { nome: 'MSC', tempo: 58 },
@@ -309,8 +385,13 @@ const App = () => {
                   { nome: 'CMA CGM', tempo: 48 }
                 ].map((item, idx) => (
                   <div key={idx}>
-                    <div className="flex justify-between text-sm mb-2"><span>{item.nome}</span><span className="text-gray-500">{item.tempo} min</span></div>
-                    <div className="w-full bg-gray-100 h-2 rounded"><div className="h-2 rounded" style={{backgroundColor: '#003B71', width: `${(item.tempo / 70) * 100}%`}}></div></div>
+                    <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '14px', marginBottom: '8px'}}>
+                      <span>{item.nome}</span>
+                      <span style={{color: '#6b7280'}}>{item.tempo} min</span>
+                    </div>
+                    <div style={{width: '100%', backgroundColor: '#f3f4f6', height: '8px', borderRadius: '4px'}}>
+                      <div style={{height: '8px', borderRadius: '4px', backgroundColor: '#003B71', width: `${(item.tempo / 70) * 100}%`}}></div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -320,50 +401,60 @@ const App = () => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full">
-            <div className="p-4 md:p-6 border-b flex justify-between" style={{backgroundColor: '#003B71'}}>
-              <h3 className="text-lg font-medium text-white">Novo Agendamento</h3>
-              <button onClick={() => setShowModal(false)} className="text-white hover:bg-blue-800 p-1 rounded"><X /></button>
+        <div style={{position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: '16px'}}>
+          <div style={{backgroundColor: 'white', borderRadius: '8px', maxWidth: '672px', width: '100%'}}>
+            <div style={{padding: '24px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', backgroundColor: '#003B71', borderTopLeftRadius: '8px', borderTopRightRadius: '8px'}}>
+              <h3 style={{fontSize: '18px', fontWeight: '500', color: 'white', margin: 0}}>Novo Agendamento</h3>
+              <button onClick={() => setShowModal(false)} style={{color: 'white', backgroundColor: 'transparent', padding: '4px', borderRadius: '6px', border: 'none', cursor: 'pointer'}}><X /></button>
             </div>
-            <div className="p-4 md:p-6 space-y-4">
-              <div><label className="block text-sm font-medium mb-2">Container</label><input type="text" placeholder="Ex: MAEU1234567" className="w-full px-4 py-2 border rounded-lg" /></div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label className="block text-sm font-medium mb-2">Armador</label>
-                  <select className="w-full px-4 py-2 border rounded-lg">
+            <div style={{padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px'}}>
+              <div>
+                <label style={{display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px'}}>Container</label>
+                <input type="text" placeholder="Ex: MAEU1234567" style={{width: '100%', padding: '8px 16px', border: '1px solid #d1d5db', borderRadius: '8px'}} />
+              </div>
+              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px'}}>
+                <div>
+                  <label style={{display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px'}}>Armador</label>
+                  <select style={{width: '100%', padding: '8px 16px', border: '1px solid #d1d5db', borderRadius: '8px'}}>
                     <option>Selecione</option>
                     <option>Maersk</option>
                     <option>MSC</option>
                   </select>
                 </div>
-                <div><label className="block text-sm font-medium mb-2">Data</label><input type="date" className="w-full px-4 py-2 border rounded-lg" /></div>
+                <div>
+                  <label style={{display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px'}}>Data</label>
+                  <input type="date" style={{width: '100%', padding: '8px 16px', border: '1px solid #d1d5db', borderRadius: '8px'}} />
+                </div>
               </div>
-              <div><label className="block text-sm font-medium mb-2">Importador</label><input type="text" placeholder="Nome da empresa" className="w-full px-4 py-2 border rounded-lg" /></div>
               <div>
-                <label className="block text-sm font-medium mb-2">Depot Sugerido</label>
-                <div className="p-4 border-2 rounded-lg" style={{borderColor: '#F39200', backgroundColor: '#FFF4E6'}}>
-                  <div className="flex items-center justify-between">
+                <label style={{display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px'}}>Importador</label>
+                <input type="text" placeholder="Nome da empresa" style={{width: '100%', padding: '8px 16px', border: '1px solid #d1d5db', borderRadius: '8px'}} />
+              </div>
+              <div>
+                <label style={{display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px'}}>Depot Sugerido</label>
+                <div style={{padding: '16px', border: '2px solid #F39200', borderRadius: '8px', backgroundColor: '#FFF4E6'}}>
+                  <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                     <div>
-                      <p className="font-medium">Depot Hapag-Lloyd</p>
-                      <p className="text-sm text-gray-600">São João - Itajaí</p>
+                      <p style={{fontWeight: '500', margin: 0}}>Depot Hapag-Lloyd</p>
+                      <p style={{fontSize: '14px', color: '#6b7280', margin: 0}}>São João - Itajaí</p>
                     </div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <div style={{width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#10b981'}}></div>
                   </div>
-                  <p className="text-xs mt-2 text-gray-600">✓ Melhor opção</p>
+                  <p style={{fontSize: '12px', marginTop: '8px', color: '#6b7280'}}>✓ Melhor opção</p>
                 </div>
               </div>
             </div>
-            <div className="p-4 md:p-6 border-t flex gap-3 justify-end">
-              <button onClick={() => setShowModal(false)} className="px-6 py-2 border rounded-lg">Cancelar</button>
-              <button onClick={() => setShowModal(false)} className="px-6 py-2 text-white rounded-lg" style={{backgroundColor: '#F39200'}}>Confirmar</button>
+            <div style={{padding: '24px', borderTop: '1px solid #e5e7eb', display: 'flex', gap: '12px', justifyContent: 'flex-end'}}>
+              <button onClick={() => setShowModal(false)} style={{padding: '8px 24px', border: '1px solid #d1d5db', borderRadius: '8px', backgroundColor: 'white', cursor: 'pointer'}}>Cancelar</button>
+              <button onClick={() => setShowModal(false)} style={{padding: '8px 24px', color: 'white', borderRadius: '8px', backgroundColor: '#F39200', border: 'none', cursor: 'pointer'}}>Confirmar</button>
             </div>
           </div>
         </div>
       )}
 
-      <div className="bg-white border-t border-gray-200 mt-12">
-        <div className="max-w-7xl mx-auto p-4 md:p-6 text-center text-xs md:text-sm text-gray-600">
-          <p>SISDEV - Protótipo Kamtech - Rotas para Inovação - Outubro 2025</p>
+      <div style={{backgroundColor: 'white', borderTop: '1px solid #e5e7eb', marginTop: '48px'}}>
+        <div style={{maxWidth: '1280px', margin: '0 auto', padding: '24px', textAlign: 'center', fontSize: '14px', color: '#6b7280'}}>
+          <p style={{margin: 0}}>SISDEV - Protótipo Kamtech - Rotas para Inovação - Outubro 2025</p>
         </div>
       </div>
     </div>
