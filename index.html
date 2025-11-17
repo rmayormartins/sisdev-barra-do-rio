@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISDEV - Barra do Rio</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f9fafb; }
+        .header { background: #003B71; color: white; padding: 24px; }
+        .header-content { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .header h1 { font-size: 28px; font-weight: 300; }
+        .header p { color: #F39200; font-size: 14px; margin-top: 4px; }
+        .header-buttons { display: flex; gap: 16px; align-items: center; }
+        .btn-header { background: transparent; border: none; color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .btn-header:hover { background: rgba(255,255,255,0.1); }
+        .notification-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 11px; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        .tabs { background: white; border-bottom: 1px solid #e5e7eb; overflow-x: auto; }
+        .tabs-content { max-width: 1280px; margin: 0 auto; display: flex; gap: 0; }
+        .tab { padding: 16px 24px; border: none; background: transparent; cursor: pointer; font-size: 14px; font-weight: 500; color: #6b7280; border-bottom: 2px solid transparent; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+        .tab.active { color: #F39200; border-bottom-color: #F39200; }
+        .tab svg { width: 20px; height: 20px; }
+        .btn-header svg { width: 20px; height: 20px; }
+        
+        .content { max-width: 1280px; margin: 24px auto; padding: 0 16px; }
+        .card { background: white; padding: 24px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 24px; }
+        .hidden { display: none; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+        .stat-card { text-align: center; padding: 20px; background: #f9fafb; border-radius: 8px; }
+        .stat-label { color: #6b7280; font-size: 14px; margin-bottom: 8px; }
+        .stat-value { font-size: 36px; font-weight: 300; }
+        
+        .depot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+        .depot-card { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid #e5e7eb; border-radius: 6px; }
+        .depot-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+        .depot-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .depot-location { font-size: 12px; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .depot-stats { text-align: right; margin-left: 16px; flex-shrink: 0; }
+        
+        .alert-card { padding: 12px; border-radius: 6px; margin-bottom: 12px; border-left: 4px solid; display: flex; gap: 8px; }
+        .alert-critico { background: #fef2f2; border-color: #ef4444; }
+        .alert-atencao { background: #fefce8; border-color: #eab308; }
+        .alert-info { background: #eff6ff; border-color: #3b82f6; }
+        
+        .filters { display: flex; gap: 12px; flex-wrap: wrap; }
+        .filter-select { font-size: 14px; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; }
+        
+        .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; padding: 12px; background: #f9fafb; border-radius: 6px; font-size: 12px; margin-bottom: 16px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { padding: 12px; text-align: left; font-size: 14px; font-weight: 500; border-bottom: 2px solid #003B71; }
+        td { padding: 12px; font-size: 14px; border-bottom: 1px solid #e5e7eb; }
+        .badge { font-size: 12px; padding: 4px 12px; border-radius: 9999px; color: white; }
+        .badge-green { background: #10b981; }
+        .badge-yellow { background: #eab308; }
+        
+        .search-box { position: relative; margin-bottom: 16px; }
+        .search-box input { width: 100%; padding: 8px 8px 8px 40px; border: 1px solid #d1d5db; border-radius: 8px; }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; display: flex; align-items: center; }
+        
+        .map-container { position: relative; background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 32px; border-radius: 8px; min-height: 500px; }
+        .map-label { position: absolute; background: white; padding: 12px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 2px solid #003B71; font-size: 12px; font-weight: bold; }
+        .map-depot { position: absolute; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.15); padding: 12px; width: 180px; border-left: 4px solid; }
+        
+        .marketplace-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+        .marketplace-card { border: 1px solid #e5e7eb; padding: 20px; border-radius: 8px; }
+        .marketplace-card h3 { margin-bottom: 8px; }
+        
+        .btn-primary { background: #F39200; color: white; border: none; padding: 8px 24px; border-radius: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .btn-secondary { background: #003B71; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 14px; width: 100%; }
+        
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .kpi-card { border-left: 4px solid; padding-left: 16px; }
+        
+        .bar-chart { margin-bottom: 16px; }
+        .bar-label { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; }
+        .bar-bg { width: 100%; background: #f3f4f6; height: 8px; border-radius: 4px; }
+        .bar-fill { height: 8px; border-radius: 4px; background: #003B71; }
+        
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+        .modal.show { display: flex; }
+        .modal-content { background: white; border-radius: 8px; max-width: 672px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        .modal-header { padding: 24px; background: #003B71; color: white; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 24px; }
+        .modal-footer { padding: 24px; border-top: 1px solid #e5e7eb; display: flex; gap: 12px; justify-content: flex-end; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+        .form-input { width: 100%; padding: 8px 16px; border: 1px solid #d1d5db; border-radius: 8px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        
+        .suggested-depot { padding: 16px; border: 2px solid #F39200; border-radius: 8px; background: #FFF4E6; }
+        .suggested-header { display: flex; justify-content: space-between; align-items: center; }
+        
+        .footer { background: white; border-top: 1px solid #e5e7eb; margin-top: 48px; padding: 24px; text-align: center; font-size: 14px; color: #6b7280; }
+
+        /* Login Screen */
+        .login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #003B71, #005A9E); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+        .login-box { background: white; border-radius: 12px; padding: 48px; max-width: 400px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .login-logo { text-align: center; margin-bottom: 32px; }
+        .login-logo h1 { font-size: 32px; color: #003B71; margin-bottom: 8px; }
+        .login-logo p { color: #F39200; font-size: 14px; }
+        .user-badge { background: #F39200; color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+
+        /* Gestão de Depots */
+        .depot-edit-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+        .depot-edit-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #F39200; }
+        .capacity-slider { width: 100%; margin: 12px 0; }
+        .capacity-display { font-size: 24px; font-weight: bold; color: #003B71; text-align: center; margin: 8px 0; }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .depot-grid { grid-template-columns: 1fr; }
+            .header-content { flex-direction: column; }
+            .login-box { margin: 16px; padding: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <h1>SISDEV - Barra do Rio</h1>
+                <p>Sistema de Gestão de Devoluções de Contêineres Vazios</p>
+            </div>
+            <div class="header-buttons">
+                <div id="userInfo" class="hidden">
+                    <span class="user-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span id="userName"></span>
+                    </span>
+                </div>
+                <button class="btn-header" style="position: relative;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+                    <span class="notification-badge">2</span>
+                </button>
+                <button class="btn-header" onclick="location.reload()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                    <span>Atualizar</span>
+                </button>
+                <button class="btn-header" id="loginBtn" onclick="showLogin()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span>Login</span>
+                </button>
+                <button class="btn-header hidden" id="logoutBtn" onclick="logout()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+        <div class="tabs-content">
+            <button class="tab active" onclick="showTab('dashboard')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+                Dashboard
+            </button>
+            <button class="tab" onclick="showTab('agendamentos')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Agendamentos
+            </button>
+            <button class="tab" onclick="showTab('mapa')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+                Mapa
+            </button>
+            <button class="tab" onclick="showTab('marketplace')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                Marketplace
+            </button>
+            <button class="tab" onclick="showTab('relatorios')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                Relatórios
+            </button>
+            <button class="tab hidden" id="gestaoTab" onclick="showTab('gestao')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                Gestão
+            </button>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <!-- Dashboard Tab -->
+        <div id="dashboard">
+            <div class="card">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Depots</div>
+                        <div class="stat-value">18</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Disponíveis</div>
+                        <div class="stat-value" style="color: #10b981;">8</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Devoluções Hoje</div>
+                        <div class="stat-value" style="color: #003B71;">47</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Tempo Médio</div>
+                        <div class="stat-value" style="color: #F39200;">42min</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 16px;">
+                    <h3 style="font-size: 18px; font-weight: 500;">Disponibilidade em Tempo Real</h3>
+                    <div class="filters">
+                        <select class="filter-select" id="filtroArmador" onchange="filtrarDepots()">
+                            <option value="todos">Todos Armadores</option>
+                            <option value="Maersk">Maersk</option>
+                            <option value="MSC">MSC</option>
+                            <option value="Hamburg Sud">Hamburg Sud</option>
+                        </select>
+                        <select class="filter-select" id="filtroStatus" onchange="filtrarDepots()">
+                            <option value="todos">Todos Status</option>
+                            <option value="disponivel">Disponível</option>
+                            <option value="parcial">Parcial</option>
+                            <option value="ocupado">Ocupado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="status-dot" style="background: #10b981;"></div>
+                        <span><strong>Disponível:</strong> Abaixo de 50%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="status-dot" style="background: #eab308;"></div>
+                        <span><strong>Parcial:</strong> 50-70%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="status-dot" style="background: #f97316;"></div>
+                        <span><strong>Ocupado:</strong> 70-90%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="status-dot" style="background: #ef4444;"></div>
+                        <span><strong>Cheio:</strong> Acima de 90%</span>
+                    </div>
+                </div>
+
+                <div class="depot-grid" id="depotsContainer"></div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px;">
+                <div class="card">
+                    <h3 style="font-size: 18px; font-weight: 500; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #F39200;">Alertas Críticos</h3>
+                    <div class="alert-card alert-critico">
+                        <div style="color: #ef4444;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        </div>
+                        <div>
+                            <p style="font-size: 14px;">Container MSCU9876543 - Free time expira em 6 horas</p>
+                            <p style="font-size: 12px; color: #6b7280; margin-top: 4px;">1h atrás</p>
+                        </div>
+                    </div>
+                    <div class="alert-card alert-atencao">
+                        <div style="color: #eab308;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        </div>
+                        <div>
+                            <p style="font-size: 14px;">Depot MSC Itajaí Porto com capacidade crítica (95%)</p>
+                            <p style="font-size: 12px; color: #6b7280; margin-top: 4px;">2h atrás</p>
+                        </div>
+                    </div>
+                    <div class="alert-card alert-info">
+                        <div style="color: #3b82f6;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        </div>
+                        <div>
+                            <p style="font-size: 14px;">Novo depot disponível: LogPark Navegantes</p>
+                            <p style="font-size: 12px; color: #6b7280; margin-top: 4px;">5h atrás</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="font-size: 18px; font-weight: 500; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #F39200;">Economia Gerada</h3>
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div style="border-left: 4px solid #F39200; padding-left: 16px;">
+                            <p style="font-size: 14px; color: #6b7280;">Custos Evitados</p>
+                            <p style="font-size: 28px; font-weight: 300; margin-top: 4px;">R$ 127.450</p>
+                        </div>
+                        <div style="border-left: 4px solid #003B71; padding-left: 16px;">
+                            <p style="font-size: 14px; color: #6b7280;">Tempo Reduzido</p>
+                            <p style="font-size: 28px; font-weight: 300; margin-top: 4px;">-38%</p>
+                        </div>
+                        <div style="border-left: 4px solid #10b981; padding-left: 16px;">
+                            <p style="font-size: 14px; color: #6b7280;">Devoluções</p>
+                            <p style="font-size: 28px; font-weight: 300; margin-top: 4px;">1.243</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agendamentos Tab -->
+        <div id="agendamentos" class="hidden">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 16px;">
+                    <h3 style="font-size: 18px; font-weight: 500;">Agendamentos</h3>
+                    <button class="btn-primary" onclick="showModal()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Novo
+                    </button>
+                </div>
+                
+                <div class="search-box">
+                    <span class="search-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    </span>
+                    <input type="text" placeholder="Buscar..." id="searchInput" oninput="filtrarAgendamentos()">
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Container</th>
+                                <th>Armador</th>
+                                <th>Importador</th>
+                                <th style="text-align: center;">Data</th>
+                                <th style="text-align: center;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="agendamentosTable">
+                            <tr>
+                                <td style="font-weight: 500;">MAEU1234567</td>
+                                <td>Maersk</td>
+                                <td>Portobello S.A.</td>
+                                <td style="text-align: center;">2025-10-11</td>
+                                <td style="text-align: center;"><span class="badge badge-green">Confirmado</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 500;">MSCU9876543</td>
+                                <td>MSC</td>
+                                <td>Haco Etiquetas</td>
+                                <td style="text-align: center;">2025-10-11</td>
+                                <td style="text-align: center;"><span class="badge badge-yellow">Aguardando</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 500;">HLCU5551234</td>
+                                <td>Hapag-Lloyd</td>
+                                <td>WEG Equipamentos</td>
+                                <td style="text-align: center;">2025-10-12</td>
+                                <td style="text-align: center;"><span class="badge badge-green">Confirmado</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mapa Tab -->
+        <div id="mapa" class="hidden">
+            <div class="card">
+                <h3 style="font-size: 18px; font-weight: 500; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #F39200;">Mapa de Depots</h3>
+                <div class="map-container">
+                    <div class="map-label" style="top: 16px; left: 16px;">ITAJAÍ</div>
+                    <div class="map-label" style="top: 16px; right: 16px;">NAVEGANTES</div>
+                    <div style="position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); background: #1e3a8a; color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: bold;">⚓ PORTO</div>
+                    
+                    <div class="map-depot" style="top: 100px; left: 40px; border-color: #10b981;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <div class="status-dot" style="background: #10b981;"></div>
+                        </div>
+                        <p style="font-size: 14px; font-weight: bold;">Depot Maersk</p>
+                        <p style="font-size: 12px; color: #6b7280;">Cordeiros</p>
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
+                            <span style="font-size: 12px;">Cap:</span>
+                            <span style="font-size: 14px; font-weight: bold; color: #10b981;">85%</span>
+                        </div>
+                    </div>
+
+                    <div class="map-depot" style="top: 100px; right: 40px; border-color: #10b981;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <div class="status-dot" style="background: #10b981;"></div>
+                        </div>
+                        <p style="font-size: 14px; font-weight: bold;">Hamburg Sud</p>
+                        <p style="font-size: 12px; color: #6b7280;">Centro</p>
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
+                            <span style="font-size: 12px;">Cap:</span>
+                            <span style="font-size: 14px; font-weight: bold; color: #10b981;">45%</span>
+                        </div>
+                    </div>
+
+                    <div class="map-depot" style="bottom: 100px; left: 80px; border-color: #ef4444;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <div class="status-dot" style="background: #ef4444;"></div>
+                        </div>
+                        <p style="font-size: 14px; font-weight: bold;">Depot MSC</p>
+                        <p style="font-size: 12px; color: #6b7280;">Porto</p>
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
+                            <span style="font-size: 12px;">Cap:</span>
+                            <span style="font-size: 14px; font-weight: bold; color: #ef4444;">95%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marketplace Tab -->
+        <div id="marketplace" class="hidden">
+            <div class="card">
+                <h3 style="font-size: 18px; font-weight: 500; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #F39200;">Marketplace</h3>
+                <div class="marketplace-grid">
+                    <div class="marketplace-card">
+                        <h3>LogPark Navegantes</h3>
+                        <p style="font-size: 12px; color: #6b7280; margin: 8px 0 12px 0;">4km do porto</p>
+                        <p style="margin-bottom: 12px;">Preço: <strong style="color: #10b981;">R$ 45/dia</strong></p>
+                        <button class="btn-secondary">Solicitar</button>
+                    </div>
+                    <div class="marketplace-card">
+                        <h3>Depot Privado Itajaí</h3>
+                        <p style="font-size: 12px; color: #6b7280; margin: 8px 0 12px 0;">3km do porto</p>
+                        <p style="margin-bottom: 12px;">Preço: <strong style="color: #10b981;">R$ 38/dia</strong></p>
+                        <button class="btn-secondary">Solicitar</button>
+                    </div>
+                    <div class="marketplace-card">
+                        <h3>Terminal Vale</h3>
+                        <p style="font-size: 12px; color: #6b7280; margin: 8px 0 12px 0;">2km do porto</p>
+                        <p style="margin-bottom: 12px;">Preço: <strong style="color: #10b981;">R$ 52/dia</strong></p>
+                        <button class="btn-secondary">Solicitar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Relatórios Tab -->
+        <div id="relatorios" class="hidden">
+            <div class="card">
+                <h3 style="font-size: 18px; font-weight: 500; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #F39200;">Relatórios</h3>
+                
+                <div class="kpi-grid">
+                    <div class="kpi-card" style="border-color: #F39200;">
+                        <p style="font-size: 14px; color: #6b7280;">Economia Total</p>
+                        <p style="font-size: 32px; font-weight: 300; margin: 8px 0 4px 0;">R$ 680K</p>
+                        <p style="font-size: 12px; color: #10b981;">↓ 42%</p>
+                    </div>
+                    <div class="kpi-card" style="border-color: #003B71;">
+                        <p style="font-size: 14px; color: #6b7280;">Devoluções</p>
+                        <p style="font-size: 32px; font-weight: 300; margin: 8px 0 4px 0;">7.891</p>
+                        <p style="font-size: 12px; color: #6b7280;">6 meses</p>
+                    </div>
+                    <div class="kpi-card" style="border-color: #10b981;">
+                        <p style="font-size: 14px; color: #6b7280;">Tempo Médio</p>
+                        <p style="font-size: 32px; font-weight: 300; margin: 8px 0 4px 0;">42min</p>
+                        <p style="font-size: 12px; color: #10b981;">↓ 38%</p>
+                    </div>
+                </div>
+
+                <div>
+                    <p style="font-size: 14px; font-weight: 500; margin-bottom: 16px;">Desempenho por Armador</p>
+                    <div class="bar-chart">
+                        <div class="bar-label"><span>MSC</span><span style="color: #6b7280;">58 min</span></div>
+                        <div class="bar-bg"><div class="bar-fill" style="width: 83%;"></div></div>
+                    </div>
+                    <div class="bar-chart">
+                        <div class="bar-label"><span>Hamburg Sud</span><span style="color: #6b7280;">42 min</span></div>
+                        <div class="bar-bg"><div class="bar-fill" style="width: 60%;"></div></div>
+                    </div>
+                    <div class="bar-chart">
+                        <div class="bar-label"><span>CMA CGM</span><span style="color: #6b7280;">48 min</span></div>
+                        <div class="bar-bg"><div class="bar-fill" style="width: 69%;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gestão Tab -->
+        <div id="gestao" class="hidden">
+            <div class="card">
+                <h3 style="font-size: 18px; font-weight: 500; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #F39200;">Gestão de Depots - <span id="armadorName"></span></h3>
+                <p style="margin-bottom: 24px; color: #6b7280;">Atualize a disponibilidade dos seus depots em tempo real</p>
+                <div id="depotsGestaoContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen hidden">
+        <div class="login-box">
+            <div class="login-logo">
+                <h1>SISDEV</h1>
+                <p>Barra do Rio</p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Armador</label>
+                <select class="form-input" id="loginArmador">
+                    <option value="">Selecione seu armador</option>
+                    <option value="Maersk">Maersk</option>
+                    <option value="MSC">MSC</option>
+                    <option value="Hamburg Sud">Hamburg Sud</option>
+                    <option value="CMA CGM">CMA CGM</option>
+                    <option value="Hapag-Lloyd">Hapag-Lloyd</option>
+                    <option value="Cosco">Cosco</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Senha</label>
+                <input type="password" class="form-input" id="loginSenha" placeholder="Digite sua senha">
+            </div>
+            <button class="btn-primary" onclick="login()" style="width: 100%; justify-content: center; margin-top: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                Entrar
+            </button>
+            <p style="text-align: center; margin-top: 24px; font-size: 12px; color: #6b7280;">Para demonstração, use qualquer senha</p>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-size: 18px; font-weight: 500;">Novo Agendamento</h3>
+                <button onclick="closeModal()" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 24px; line-height: 1;">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Container</label>
+                    <input type="text" class="form-input" placeholder="Ex: MAEU1234567">
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Armador</label>
+                        <select class="form-input">
+                            <option>Selecione</option>
+                            <option>Maersk</option>
+                            <option>MSC</option>
+                            <option>Hamburg Sud</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data</label>
+                        <input type="date" class="form-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Importador</label>
+                    <input type="text" class="form-input" placeholder="Nome da empresa">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Depot Sugerido</label>
+                    <div class="suggested-depot">
+                        <div class="suggested-header">
+                            <div>
+                                <p style="font-weight: 500;">Depot Hapag-Lloyd</p>
+                                <p style="font-size: 14px; color: #6b7280;">São João - Itajaí</p>
+                            </div>
+                            <div class="status-dot" style="background: #10b981;"></div>
+                        </div>
+                        <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">✓ Melhor opção</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal()" style="padding: 8px 24px; border: 1px solid #d1d5db; border-radius: 8px; background: white; cursor: pointer;">Cancelar</button>
+                <button onclick="closeModal()" class="btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>SISDEV - Protótipo Kamtech - Rotas para Inovação - Outubro 2025</p>
+    </div>
+
+    <script>
+        // Dados dos depots
+        let depots = [
+            { id: 1, nome: 'Depot Maersk Itajaí', armador: 'Maersk', localizacao: 'Itajaí - Cordeiros', capacidade: 85, tempoEspera: '15 min', status: 'disponivel' },
+            { id: 2, nome: 'Depot Hamburg Sud Navegantes', armador: 'Hamburg Sud', localizacao: 'Navegantes - Centro', capacidade: 45, tempoEspera: '30 min', status: 'disponivel' },
+            { id: 3, nome: 'Depot MSC Itajaí Porto', armador: 'MSC', localizacao: 'Itajaí - Porto', capacidade: 95, tempoEspera: '2h', status: 'ocupado' },
+            { id: 4, nome: 'Depot CMA CGM Navegantes', armador: 'CMA CGM', localizacao: 'Navegantes - Vila Operária', capacidade: 68, tempoEspera: '45 min', status: 'parcial' },
+            { id: 5, nome: 'Depot Hapag-Lloyd Itajaí', armador: 'Hapag-Lloyd', localizacao: 'Itajaí - São João', capacidade: 22, tempoEspera: '10 min', status: 'disponivel' },
+            { id: 6, nome: 'Depot Cosco Navegantes Sul', armador: 'Cosco', localizacao: 'Navegantes - Gravatá', capacidade: 100, tempoEspera: '3h+', status: 'cheio' }
+        ];
+
+        // Estado de autenticação
+        let currentUser = null;
+
+        // Carregar dados salvos do localStorage
+        function loadData() {
+            const savedDepots = localStorage.getItem('depots');
+            if (savedDepots) {
+                depots = JSON.parse(savedDepots);
+            }
+
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUIForLoggedInUser();
+            }
+        }
+
+        // Salvar depots no localStorage
+        function saveDepots() {
+            localStorage.setItem('depots', JSON.stringify(depots));
+        }
+
+        // Função para obter cor do status
+        function getStatusColor(status) {
+            const colors = {
+                disponivel: '#10b981',
+                parcial: '#eab308',
+                ocupado: '#f97316',
+                cheio: '#ef4444'
+            };
+            return colors[status] || '#6b7280';
+        }
+
+        // Renderizar depots
+        function renderDepots(filteredDepots) {
+            const container = document.getElementById('depotsContainer');
+            container.innerHTML = '';
+            
+            filteredDepots.forEach(depot => {
+                const card = document.createElement('div');
+                card.className = 'depot-card';
+                card.innerHTML = `
+                    <div class="depot-info">
+                        <div class="status-dot" style="background: ${getStatusColor(depot.status)};"></div>
+                        <div style="min-width: 0;">
+                            <div class="depot-name">${depot.nome}</div>
+                            <div class="depot-location">${depot.armador} • ${depot.localizacao}</div>
+                        </div>
+                    </div>
+                    <div class="depot-stats">
+                        <div style="font-size: 14px; font-weight: 500;">${depot.capacidade}%</div>
+                        <div style="font-size: 12px; color: #9ca3af;">${depot.tempoEspera}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Filtrar depots
+        function filtrarDepots() {
+            const armador = document.getElementById('filtroArmador').value;
+            const status = document.getElementById('filtroStatus').value;
+            
+            const filtered = depots.filter(d => {
+                const matchArmador = armador === 'todos' || d.armador === armador;
+                const matchStatus = status === 'todos' || d.status === status;
+                return matchArmador && matchStatus;
+            });
+            
+            renderDepots(filtered);
+        }
+
+        // Filtrar agendamentos
+        function filtrarAgendamentos() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#agendamentosTable tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(search) ? '' : 'none';
+            });
+        }
+
+        // Trocar abas
+        function showTab(tabName) {
+            // Esconder todas as abas
+            const tabs = ['dashboard', 'agendamentos', 'mapa', 'marketplace', 'relatorios'];
+            tabs.forEach(tab => {
+                const element = document.getElementById(tab);
+                if (element) element.classList.add('hidden');
+            });
+            
+            // Remover active de todos os botões
+            document.querySelectorAll('.tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Mostrar aba selecionada
+            const selectedTab = document.getElementById(tabName);
+            if (selectedTab) selectedTab.classList.remove('hidden');
+            
+            // Adicionar active no botão clicado
+            event.target.classList.add('active');
+        }
+
+        // Modal
+        function showModal() {
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target.id === 'modal') {
+                closeModal();
+            }
+        });
+
+        // Funções de Login
+        function showLogin() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+        }
+
+        function hideLogin() {
+            document.getElementById('loginScreen').classList.add('hidden');
+        }
+
+        function login() {
+            const armador = document.getElementById('loginArmador').value;
+            const senha = document.getElementById('loginSenha').value;
+
+            if (!armador) {
+                alert('Por favor, selecione um armador');
+                return;
+            }
+
+            if (!senha) {
+                alert('Por favor, digite uma senha');
+                return;
+            }
+
+            // Para demonstração, aceita qualquer senha
+            currentUser = { armador: armador };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            updateUIForLoggedInUser();
+            hideLogin();
+            showTab('gestao');
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+
+            // Esconder elementos do usuário logado
+            document.getElementById('userInfo').classList.add('hidden');
+            document.getElementById('loginBtn').classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+            document.getElementById('gestaoTab').classList.add('hidden');
+
+            // Voltar para dashboard
+            showTab('dashboard');
+        }
+
+        function updateUIForLoggedInUser() {
+            if (!currentUser) return;
+
+            // Atualizar interface
+            document.getElementById('userName').textContent = currentUser.armador;
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('loginBtn').classList.add('hidden');
+            document.getElementById('logoutBtn').classList.remove('hidden');
+            document.getElementById('gestaoTab').classList.remove('hidden');
+            document.getElementById('armadorName').textContent = currentUser.armador;
+
+            // Renderizar depots de gestão
+            renderDepotsGestao();
+        }
+
+        // Renderizar depots para gestão
+        function renderDepotsGestao() {
+            if (!currentUser) return;
+
+            const container = document.getElementById('depotsGestaoContainer');
+            const userDepots = depots.filter(d => d.armador === currentUser.armador);
+
+            if (userDepots.length === 0) {
+                container.innerHTML = '<p style="text-align: center; padding: 40px; color: #6b7280;">Nenhum depot encontrado para seu armador.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+
+            userDepots.forEach(depot => {
+                const card = document.createElement('div');
+                card.className = 'depot-edit-card';
+
+                const statusColor = getStatusColor(depot.status);
+
+                card.innerHTML = `
+                    <div class="depot-edit-header">
+                        <div>
+                            <h4 style="font-size: 16px; font-weight: 500; margin-bottom: 4px;">${depot.nome}</h4>
+                            <p style="font-size: 14px; color: #6b7280;">${depot.localizacao}</p>
+                        </div>
+                        <div class="status-dot" style="background: ${statusColor}; width: 16px; height: 16px;"></div>
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label class="form-label">Capacidade Atual</label>
+                        <div class="capacity-display">${depot.capacidade}%</div>
+                        <input type="range" min="0" max="100" value="${depot.capacidade}"
+                               class="capacity-slider"
+                               oninput="updateCapacity(${depot.id}, this.value)"
+                               style="accent-color: #F39200;">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tempo de Espera Estimado</label>
+                        <select class="form-input" onchange="updateWaitTime(${depot.id}, this.value)">
+                            <option value="5 min" ${depot.tempoEspera === '5 min' ? 'selected' : ''}>5 minutos</option>
+                            <option value="10 min" ${depot.tempoEspera === '10 min' ? 'selected' : ''}>10 minutos</option>
+                            <option value="15 min" ${depot.tempoEspera === '15 min' ? 'selected' : ''}>15 minutos</option>
+                            <option value="30 min" ${depot.tempoEspera === '30 min' ? 'selected' : ''}>30 minutos</option>
+                            <option value="45 min" ${depot.tempoEspera === '45 min' ? 'selected' : ''}>45 minutos</option>
+                            <option value="1h" ${depot.tempoEspera === '1h' ? 'selected' : ''}>1 hora</option>
+                            <option value="2h" ${depot.tempoEspera === '2h' ? 'selected' : ''}>2 horas</option>
+                            <option value="3h+" ${depot.tempoEspera === '3h+' ? 'selected' : ''}>3+ horas</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                        <button class="btn-primary" onclick="saveDepotChanges(${depot.id})" style="flex: 1; justify-content: center;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                            Salvar Alterações
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Atualizar capacidade do depot
+        function updateCapacity(depotId, value) {
+            const depot = depots.find(d => d.id === depotId);
+            if (depot) {
+                depot.capacidade = parseInt(value);
+
+                // Atualizar status baseado na capacidade
+                if (depot.capacidade < 50) {
+                    depot.status = 'disponivel';
+                } else if (depot.capacidade < 70) {
+                    depot.status = 'parcial';
+                } else if (depot.capacidade < 90) {
+                    depot.status = 'ocupado';
+                } else {
+                    depot.status = 'cheio';
+                }
+
+                // Atualizar display
+                const card = event.target.closest('.depot-edit-card');
+                card.querySelector('.capacity-display').textContent = value + '%';
+                const statusDot = card.querySelector('.status-dot');
+                statusDot.style.background = getStatusColor(depot.status);
+            }
+        }
+
+        // Atualizar tempo de espera
+        function updateWaitTime(depotId, value) {
+            const depot = depots.find(d => d.id === depotId);
+            if (depot) {
+                depot.tempoEspera = value;
+            }
+        }
+
+        // Salvar alterações do depot
+        function saveDepotChanges(depotId) {
+            saveDepots();
+            renderDepots(depots);
+
+            // Mostrar mensagem de sucesso
+            alert('✓ Alterações salvas com sucesso! Os dados foram atualizados no sistema.');
+
+            // Recarregar a visualização de gestão
+            renderDepotsGestao();
+        }
+
+        // Modificar a função showTab para incluir gestao
+        const originalShowTab = showTab;
+        function showTab(tabName) {
+            // Esconder todas as abas
+            const tabs = ['dashboard', 'agendamentos', 'mapa', 'marketplace', 'relatorios', 'gestao'];
+            tabs.forEach(tab => {
+                const element = document.getElementById(tab);
+                if (element) element.classList.add('hidden');
+            });
+
+            // Remover active de todos os botões
+            document.querySelectorAll('.tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Mostrar aba selecionada
+            const selectedTab = document.getElementById(tabName);
+            if (selectedTab) selectedTab.classList.remove('hidden');
+
+            // Adicionar active no botão clicado
+            if (event && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // Se chamado programaticamente, encontrar o botão correto
+                const tabButton = document.querySelector(`[onclick*="'${tabName}'"]`);
+                if (tabButton) tabButton.classList.add('active');
+            }
+        }
+
+        // Inicializar
+        loadData();
+        renderDepots(depots);
+    </script>
+</body>
+</html>bar-label"><span>Maersk</span><span style="color: #6b7280;">35 min</span></div>
+                        <div class="bar-bg"><div class="bar-fill" style="width: 50%;"></div></div>
+                    </div>
+                    <div class="bar-chart">
+                        <div class="
