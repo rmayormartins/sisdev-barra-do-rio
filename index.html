@@ -482,7 +482,7 @@
         <div id="gestao" class="hidden">
             <div class="card">
                 <h3 style="font-size: 18px; font-weight: 500; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #F39200;">Gestão de Depots - <span id="armadorName"></span></h3>
-                <p style="margin-bottom: 24px; color: #6b7280;">Atualize a disponibilidade dos seus depots em tempo real</p>
+                <p style="margin-bottom: 24px; color: #6b7280;"><span id="gestaoDesc">Atualize a disponibilidade dos seus depots em tempo real</span></p>
                 <div id="depotsGestaoContainer"></div>
             </div>
         </div>
@@ -496,9 +496,10 @@
                 <p>Barra do Rio</p>
             </div>
             <div class="form-group">
-                <label class="form-label">Armador</label>
+                <label class="form-label">Perfil de Acesso</label>
                 <select class="form-input" id="loginArmador">
-                    <option value="">Selecione seu armador</option>
+                    <option value="">Selecione seu perfil</option>
+                    <option value="Barra do Rio">🏢 Barra do Rio (Administrador)</option>
                     <option value="Maersk">Maersk</option>
                     <option value="MSC">MSC</option>
                     <option value="Hamburg Sud">Hamburg Sud</option>
@@ -670,28 +671,6 @@
             });
         }
 
-        // Trocar abas
-        function showTab(tabName) {
-            // Esconder todas as abas
-            const tabs = ['dashboard', 'agendamentos', 'mapa', 'marketplace', 'relatorios'];
-            tabs.forEach(tab => {
-                const element = document.getElementById(tab);
-                if (element) element.classList.add('hidden');
-            });
-            
-            // Remover active de todos os botões
-            document.querySelectorAll('.tab').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Mostrar aba selecionada
-            const selectedTab = document.getElementById(tabName);
-            if (selectedTab) selectedTab.classList.remove('hidden');
-            
-            // Adicionar active no botão clicado
-            event.target.classList.add('active');
-        }
-
         // Modal
         function showModal() {
             document.getElementById('modal').classList.add('show');
@@ -722,7 +701,7 @@
             const senha = document.getElementById('loginSenha').value;
 
             if (!armador) {
-                alert('Por favor, selecione um armador');
+                alert('Por favor, selecione seu perfil de acesso');
                 return;
             }
 
@@ -737,7 +716,16 @@
 
             updateUIForLoggedInUser();
             hideLogin();
-            showTab('gestao');
+
+            // Chama showTab sem usar event
+            const tabs = ['dashboard', 'agendamentos', 'mapa', 'marketplace', 'relatorios', 'gestao'];
+            tabs.forEach(tab => {
+                const element = document.getElementById(tab);
+                if (element) element.classList.add('hidden');
+            });
+            document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('gestao').classList.remove('hidden');
+            document.getElementById('gestaoTab').classList.add('active');
         }
 
         function logout() {
@@ -763,7 +751,15 @@
             document.getElementById('loginBtn').classList.add('hidden');
             document.getElementById('logoutBtn').classList.remove('hidden');
             document.getElementById('gestaoTab').classList.remove('hidden');
-            document.getElementById('armadorName').textContent = currentUser.armador;
+
+            // Atualizar título e descrição conforme perfil
+            if (currentUser.armador === 'Barra do Rio') {
+                document.getElementById('armadorName').textContent = 'Todos os Depots';
+                document.getElementById('gestaoDesc').textContent = 'Gerencie todos os depots do sistema';
+            } else {
+                document.getElementById('armadorName').textContent = currentUser.armador;
+                document.getElementById('gestaoDesc').textContent = 'Atualize a disponibilidade dos seus depots em tempo real';
+            }
 
             // Renderizar depots de gestão
             renderDepotsGestao();
@@ -774,10 +770,15 @@
             if (!currentUser) return;
 
             const container = document.getElementById('depotsGestaoContainer');
-            const userDepots = depots.filter(d => d.armador === currentUser.armador);
+
+            // Se for Barra do Rio (administrador), mostra todos os depots
+            // Se for armador, mostra apenas os seus depots
+            const userDepots = currentUser.armador === 'Barra do Rio'
+                ? depots
+                : depots.filter(d => d.armador === currentUser.armador);
 
             if (userDepots.length === 0) {
-                container.innerHTML = '<p style="text-align: center; padding: 40px; color: #6b7280;">Nenhum depot encontrado para seu armador.</p>';
+                container.innerHTML = '<p style="text-align: center; padding: 40px; color: #6b7280;">Nenhum depot encontrado.</p>';
                 return;
             }
 
