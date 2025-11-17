@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Login - SISDEV</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #003B71, #005A9E);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #003B71;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #F39200;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            background: #F39200;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #d67f00;
+        }
+        .resultado {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            display: none;
+        }
+        .resultado.show {
+            display: block;
+        }
+        .info {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>SISDEV</h1>
+        <p>Teste de Login</p>
+
+        <div class="form-group">
+            <label>Perfil de Acesso</label>
+            <select id="perfil">
+                <option value="">Selecione</option>
+                <option value="Barra do Rio">🏢 Barra do Rio (Admin)</option>
+                <option value="Maersk">Maersk</option>
+                <option value="MSC">MSC</option>
+                <option value="Hamburg Sud">Hamburg Sud</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="senha" placeholder="Digite qualquer senha">
+        </div>
+
+        <button onclick="testarLogin()">ENTRAR</button>
+
+        <div class="info">
+            Use qualquer senha para testar
+        </div>
+
+        <div id="resultado" class="resultado"></div>
+    </div>
+
+    <script>
+        function testarLogin() {
+            console.log('Botão clicado!');
+
+            var perfil = document.getElementById('perfil').value;
+            var senha = document.getElementById('senha').value;
+            var resultado = document.getElementById('resultado');
+
+            console.log('Perfil:', perfil);
+            console.log('Senha:', senha);
+
+            if (!perfil) {
+                alert('Selecione um perfil!');
+                return;
+            }
+
+            if (!senha) {
+                alert('Digite uma senha!');
+                return;
+            }
+
+            // Login OK
+            resultado.innerHTML = '<strong>✓ LOGIN FUNCIONOU!</strong><br>Perfil: ' + perfil + '<br>Agora vamos testar no sistema principal.';
+            resultado.className = 'resultado show';
+            resultado.style.background = '#d4edda';
+            resultado.style.color = '#155724';
+            resultado.style.border = '2px solid #28a745';
+
+            console.log('Login realizado com sucesso!');
+
+            setTimeout(function() {
+                if (confirm('Login funcionou! Deseja ir para o sistema principal?')) {
+                    window.location.href = 'index.html';
+                }
+            }, 1000);
+        }
+
+        // Permitir Enter
+        document.getElementById('senha').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                testarLogin();
+            }
+        });
+
+        console.log('Página carregada. Pronto para testar!');
+    </script>
+</body>
+</html>
